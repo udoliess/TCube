@@ -10,8 +10,14 @@ def pl(qs):
         for x, y, z in qs:
             m[x][y][z] = c
         if c == 54:
-            print(m)
             s+=1
+            print('{0}:'.format(s))
+            for e0 in m:
+                for e1 in e0:
+                    for e2 in e1:
+                        print('{0:02}'.format(e2), end=' ')
+                    print(' ', end=' ')
+                print()
         else:
             i+=1
             foo()
@@ -54,4 +60,3 @@ for z in range(6):
         for x in range(6):
             xyz.append((x,y,z))
 foo()
-print(s)
