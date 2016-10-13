@@ -1,62 +1,51 @@
 # TCube
+# build a 6*6*6 cube with 54 T pieces
+#   ________
+# /________/|
+# |__    __|/
+#    |__|/
+
 # ULi161013
 
-def pl(qs):
-    global c
-    global i
-    global s
-    if all((all(0<=d<6 for d in q) and not m[q[0]][q[1]][q[2]]) for q in qs):
-        c+=1
-        for x, y, z in qs:
-            m[x][y][z] = c
-        if c == 54:
-            s+=1
-            print('{0}:'.format(s))
-            for e0 in m:
-                for e1 in e0:
-                    for e2 in e1:
-                        print('{0:02}'.format(e2), end=' ')
-                    print(' ', end=' ')
-                print()
-        else:
-            i+=1
-            foo()
-            i-=1
-        for x, y, z in qs:
+def pl(i, cs):
+    global n
+    if all((all(0<=d<6 for d in c) and not m[c[0]][c[1]][c[2]]) for c in cs):
+        n+=1
+        for x,y,z in cs:
+            m[x][y][z] = n
+        foo(i+1)
+        for x,y,z in cs:
             m[x][y][z] = 0
-        c-=1
+        n-=1
 
-def foo():
-    global i
-    x,y,z = xyz[i]
-    if not m[x][y][z]:
-        # naming of positioning variants at the end of each line:
-        # 1st letter = direction of 3 cuboids
-        # sign and 2nd letter = direction of 4th cuboid
-        pl(((x,y,z), (x+1,y,z), (x+2,y,z), (x+1,y+1,z))) # x+y
-        pl(((x,y,z), (x+1,y,z), (x+2,y,z), (x+1,y,z+1))) # x+z
-        pl(((x,y,z), (x-1,y+1,z), (x,y+1,z), (x+1,y+1,z))) # x-y
-        pl(((x,y,z), (x-1,y,z+1), (x,y,z+1), (x+1,y,z+1))) # x-z
-        pl(((x,y,z), (x,y+1,z), (x,y+2,z), (x+1,y+1,z))) # y+x
-        pl(((x,y,z), (x,y+1,z), (x,y+2,z), (x,y+1,z+1))) # y+z
-        pl(((x,y,z), (x,y+1,z), (x,y+2,z), (x-1,y+1,z))) # y-x
-        pl(((x,y,z), (x,y-1,z+1), (x,y,z+1), (x,y+1,z+1))) # y-z
-        pl(((x,y,z), (x,y,z+1), (x,y,z+2), (x+1,y,z+1))) # z+x
-        pl(((x,y,z), (x,y,z+1), (x,y,z+2), (x,y+1,z+1))) # z+y
-        pl(((x,y,z), (x,y,z+1), (x,y,z+2), (x-1,y,z+1))) # z-x
-        pl(((x,y,z), (x,y,z+1), (x,y,z+2), (x,y-1,z+1))) # z-y
+def foo(i):
+    global s
+    if i==216:
+        s+=1
+        print('{0}:'.format(s))
+        print('\n'.join('  '.join(' '.join('{0:02}'.format(e2)
+            for e2 in e1) for e1 in e0) for e0 in m))
     else:
-        i+=1
-        foo()
-        i-=1
+        x,y,z =i%6,i//6%6,i//36%6
+        if not m[x][y][z]:
+            # naming of piece orientation at the end of each source line:
+            # 1st letter = direction of 3 cubes line
+            # sign and 2nd letter = direction of 4th cube
+            pl(i, ((x,y,z), (x+1,y,z), (x+2,y,z), (x+1,y+1,z))) # x+y
+            pl(i, ((x,y,z), (x+1,y,z), (x+2,y,z), (x+1,y,z+1))) # x+z
+            pl(i, ((x,y,z), (x-1,y+1,z), (x,y+1,z), (x+1,y+1,z))) # x-y
+            pl(i, ((x,y,z), (x-1,y,z+1), (x,y,z+1), (x+1,y,z+1))) # x-z
+            pl(i, ((x,y,z), (x,y+1,z), (x,y+2,z), (x+1,y+1,z))) # y+x
+            pl(i, ((x,y,z), (x,y+1,z), (x,y+2,z), (x,y+1,z+1))) # y+z
+            pl(i, ((x,y,z), (x,y+1,z), (x,y+2,z), (x-1,y+1,z))) # y-x
+            pl(i, ((x,y,z), (x,y-1,z+1), (x,y,z+1), (x,y+1,z+1))) # y-z
+            pl(i, ((x,y,z), (x,y,z+1), (x,y,z+2), (x+1,y,z+1))) # z+x
+            pl(i, ((x,y,z), (x,y,z+1), (x,y,z+2), (x,y+1,z+1))) # z+y
+            pl(i, ((x,y,z), (x,y,z+1), (x,y,z+2), (x-1,y,z+1))) # z-x
+            pl(i, ((x,y,z), (x,y,z+1), (x,y,z+2), (x,y-1,z+1))) # z-y
+        else:
+            foo(i+1)
 
 m = [[[0 for x in range(6)] for x in range(6)] for x in range(6)]
-c = 0
-i = 0
-s = 0
-xyz = list()
-for z in range(6):
-    for y in range(6):
-        for x in range(6):
-            xyz.append((x,y,z))
-foo()
+n = s = 0
+foo(0)
