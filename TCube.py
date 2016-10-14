@@ -1,15 +1,17 @@
 # TCube
-# build a 6*6*6 cube with 54 T pieces
+# build a d0*d1*d2 cuboid with (d0*d1*d2/4) T pieces
 #   ________
 # /________/|
 # |__    __|/
 #    |__|/
 
-# ULi161013
+# ULi161013...
+
+d0,d1,d2 = 6,6,6
 
 def pl(i, cs):
     global n
-    if all((all(0<=d<6 for d in c) and not m[c[0]][c[1]][c[2]]) for c in cs):
+    if all(0<=x<d0 and 0<=y<d1 and 0<=z<d2 and not m[x][y][z] for x,y,z in cs):
         n+=1
         for x,y,z in cs:
             m[x][y][z] = n
@@ -20,13 +22,13 @@ def pl(i, cs):
 
 def foo(i):
     global s
-    if i==216:
+    if i==d012:
         s+=1
         print('{0}:'.format(s))
-        print('\n'.join('  '.join(' '.join('{0:02}'.format(e2)
+        print('\n'.join('   '.join(' '.join('{0:02}'.format(e2)
             for e2 in e1) for e1 in e0) for e0 in m))
     else:
-        x,y,z =i%6,i//6%6,i//36%6
+        x,y,z =i%d0,i//d0%d1,i//d01%d2
         if not m[x][y][z]:
             # naming of piece orientation at the end of each source line:
             # 1st letter = direction of 3 cubes line
@@ -46,6 +48,8 @@ def foo(i):
         else:
             foo(i+1)
 
-m = [[[0 for x in range(6)] for x in range(6)] for x in range(6)]
+d01 = d0*d1
+d012 = d01*d2
+m = [[[0 for z in range(d2)] for y in range(d1)] for x in range(d0)]
 n = s = 0
 foo(0)
